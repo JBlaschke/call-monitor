@@ -13,3 +13,4 @@ def test_fn_1(x, y, z=3):
 if __name__ == "__main__":
 
     test_fn_1(1, "two")
+    test_fn_1(2, y="three", z=[])
