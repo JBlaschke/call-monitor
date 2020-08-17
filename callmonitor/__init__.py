@@ -2,4 +2,4 @@
 # -*- coding: utf-8 -*-
 
 from .monitor import intercept
-from .files   import NPHandler, ArgsHandler
+from .files   import NPHandler, ArgsHandler, Loader

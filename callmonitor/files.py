@@ -5,7 +5,7 @@
 
 from os      import makedirs
 from os.path import join, exists
-from pickle  import dump
+from pickle  import dump, load
 
 import numpy as np
 
@@ -80,3 +80,22 @@ class ArgsHandler(object):
 
         with open(join(self.dest, "kwargs.pkl"), "wb") as f:
             dump(pickle_kwmask, f)
+
+
+
+class Loader(object):
+
+    def __init__(self, name, count):
+        self.dest = join("call-monitor", name, str(count))
+
+
+    def load(self):
+
+        with open(join(self.dest, "args.pkl"), "rb") as f:
+            args = load(f)
+
+        with open(join(self.dest, "kwargs.pkl"), "rb") as f:
+            kwargs = load(f)
+
+        return args, kwargs
+
