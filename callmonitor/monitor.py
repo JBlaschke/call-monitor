@@ -13,19 +13,27 @@ class Counter(object, metaclass=Singleton):
     def __init__(self):
         self.reset()
 
+
     def reset(self):
-        self.count = 0
+        self._count = {}
 
-    @property
-    def count(self):
-        return self._count
 
-    @count.setter
-    def count(self, val):
-        self._count = val
+    def reset_key(self, key):
+        self._count[key] = 0
 
-    def increment(self, step=1):
-        self._count += step
+
+    def count(self, key):
+        if not key in self._count.keys():
+            self.reset_key(key)
+
+        return self._count[key]
+
+
+    def increment(self, key):
+        if not key in self._count.keys():
+            self.reset_key(key)
+
+        self._count[key] += 1
 
 
 
