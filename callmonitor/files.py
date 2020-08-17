@@ -13,7 +13,11 @@ from .counter import Counter
 
 
 
-class NPHandler(object):
+class Handler(object):
+    pass
+
+
+class NPHandler(Handler):
 
     def __init__(self, dest, target):
         self.root   = dest
@@ -93,9 +97,17 @@ class Loader(object):
 
         with open(join(self.dest, "args.pkl"), "rb") as f:
             args = load(f)
+            for i, arg in enumerate(args):
+                if isinstance(arg, Handler):
+                    args[i] = arg.load()
+
 
         with open(join(self.dest, "kwargs.pkl"), "rb") as f:
             kwargs = load(f)
+            for kw in kwargs:
+                if isinstance(kwargs[kw], Handler):
+                    kwargs[kw] = kwargs[kw].load()
+
 
         return args, kwargs
 
