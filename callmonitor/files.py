@@ -108,6 +108,4 @@ class Loader(object):
                 if isinstance(kwargs[kw], Handler):
                     kwargs[kw] = kwargs[kw].load()
 
-
         return args, kwargs
-
