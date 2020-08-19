@@ -13,7 +13,7 @@ with open("README.md", "r") as fh:
 
 
 setuptools.setup(
-    name="callmonitor-johannes.blaschke",
+    name="callmonitor",
     version="0.1.0",
     author="Johannes Blaschke",
     author_email="johannes@blaschke.science",
