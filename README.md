@@ -10,3 +10,7 @@ l = callmonitor.Loader("<function name>", invocation_count)
 args, kwargs = l.load()
 ```
 loads the `invocation_count`-th call to `<function_name>`.
+
+If the call data has been saved using `v0.2.0` or greater, then the
+`inspect.FullArgSpec` will also be saved. This can be accessed using
+`l.argspec`. Otherwise `l.argspec` will throw an `ArgspecUnkown` error.
