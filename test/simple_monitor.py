@@ -12,7 +12,16 @@ def test_fn_1(x, y, z=3):
 
 
 
+@intercept
+def test_fn_2(x, y=2, z=3):
+    pass
+
+
+
+
+
 if __name__ == "__main__":
 
     test_fn_1(1, "two")
     test_fn_1(2, y="three", z=[])
+    test_fn_2(10)

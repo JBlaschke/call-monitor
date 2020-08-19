@@ -35,13 +35,18 @@ class NPHandler(Handler):
 
 class ArgsHandler(object):
 
-    def __init__(self, name):
+    def __init__(self, name, argspec=None):
         c = Counter()
         c.increment(name)
 
         self.dest = join("call-monitor", name, str(c.count(name)))
         if not exists(self.dest):
             makedirs(self.dest)
+
+        self._has_argspec = False
+        if argspec is not None:
+            self._has_argspec = True
+            self.argspec = argspec
 
 
     @staticmethod
@@ -85,12 +90,36 @@ class ArgsHandler(object):
         with open(join(self.dest, "kwargs.pkl"), "wb") as f:
             dump(pickle_kwmask, f)
 
+        if self._has_argspec:
+            with open(join(self.dest, "argspec.pkl"), "wb") as f:
+                dump(self.argspec, f)
+
+
+
+class ArgspecUnknown(Exception):
+    """Argspec not known."""
+    pass
+
 
 
 class Loader(object):
 
     def __init__(self, name, count):
         self.dest = join("call-monitor", name, str(count))
+
+        self._has_argspec = False
+        if exists(join(self.dest, "argspec.pkl")):
+            self._has_argspec = True
+            with open(join(self.dest, "argspec.pkl"), "rb") as f:
+                self._argspec = load(f)
+
+
+    @property
+    def argspec(self):
+        if self._has_argspec:
+            return self._argspec
+        else:
+            raise ArgspecUnknown
 
 
     def load(self):
