@@ -104,8 +104,8 @@ class ArgspecUnknown(Exception):
 
 class Loader(object):
 
-    def __init__(self, name, count):
-        self.dest = join("call-monitor", name, str(count))
+    def __init__(self, name, count, root=None):
+        self.dest = join(root, "call-monitor", name, str(count))
 
         self._has_argspec = False
         if exists(join(self.dest, "argspec.pkl")):
