@@ -14,7 +14,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="callmonitor",
-    version="0.2.0",
+    version="0.2.1",
     author="Johannes Blaschke",
     author_email="johannes@blaschke.science",
     description="A light-weight package that allows you to monitor function calls with ease.",
