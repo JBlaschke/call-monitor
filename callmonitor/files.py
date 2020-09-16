@@ -13,23 +13,61 @@ from .counter import Counter
 
 
 
-class Handler(object):
+class HasNoRoot(Exception):
+    """Has No Root"""
     pass
+
+
+
+class Handler(object):
+
+    def __init__(self, dest, target):
+        self._dest     = dest
+        self._target   = target
+        self._has_root = False
+
+
+    @property
+    def has_root(self):
+        return self._has_root
+
+
+    @property
+    def root(self):
+        if self.has_root:
+            return self._root
+        else:
+            raise HasNoRoot
+
+
+    @root.setter
+    def root(self, val):
+        self._root = val
+        self._has_root = True
+
+
+    @property
+    def dest(self):
+        if self.has_root:
+            return join(self.root, self._dest)
+        else:
+            return self._dest
+
+
+    @property
+    def target(self):
+        return self._target
+
 
 
 class NPHandler(Handler):
 
-    def __init__(self, dest, target):
-        self.root   = dest
-        self.target = target
-
-
     def load(self):
-        return np.load(join(self.root, f"arg_{self.target}.npy"))
+        return np.load(join(self.dest, f"arg_{self.target}.npy"))
 
 
     def save(self, data):
-        np.save(join(self.root, f"arg_{self.target}.npy"), data)
+        np.save(join(self.dest, f"arg_{self.target}.npy"), data)
 
 
 
@@ -105,7 +143,11 @@ class ArgspecUnknown(Exception):
 class Loader(object):
 
     def __init__(self, name, count, root=None):
-        self.dest = join(root, "call-monitor", name, str(count))
+
+        self._dest = join("call-monitor", name, str(count))
+        self._has_root = False
+        if root is not None:
+            self.root = root
 
         self._has_argspec = False
         if exists(join(self.dest, "argspec.pkl")):
@@ -122,12 +164,41 @@ class Loader(object):
             raise ArgspecUnknown
 
 
+    @property
+    def has_root(self):
+        return self._has_root
+
+
+    @property
+    def root(self):
+        if self.has_root:
+            return self._root
+        else:
+            raise HasNoRoot
+
+
+    @root.setter
+    def root(self, val):
+        self._root = val
+        self._has_root = True
+
+
+    @property
+    def dest(self):
+        if self.has_root:
+            return join(self.root, self._dest)
+        else:
+            return self._dest
+
+
     def load(self):
 
         with open(join(self.dest, "args.pkl"), "rb") as f:
             args = load(f)
             for i, arg in enumerate(args):
                 if isinstance(arg, Handler):
+                    if self.has_root:
+                        arg.root = self.root
                     args[i] = arg.load()
 
 
