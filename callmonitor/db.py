@@ -23,9 +23,7 @@ MIN_VERSION = (0, 3, 0)
 
 
 def compatible(i, j, k):
-    if i > MIN_VERSION[0] &&
-       j > MIN_VERSION[1] &&
-       k > MIN_VERSION[2]:
+    if i > MIN_VERSION[0] and j > MIN_VERSION[1] and k > MIN_VERSION[2]:
         return True
 
     return False
