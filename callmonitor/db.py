@@ -94,7 +94,7 @@ class DB(object):
 
         self.counter.increment(name)
 
-        dest = join(self.root, name, self.counter[name])
+        dest = join(self.root, name, str(self.counter[name]))
 
         if exists(dest):
             raise DestinationNotFree
