@@ -14,7 +14,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="callmonitor",
-    version="0.2.2",
+    version="0.2.3",
     author="Johannes Blaschke",
     author_email="johannes@blaschke.science",
     description="A light-weight package that allows you to monitor function calls with ease.",
@@ -28,4 +28,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
+    install_requires=[
+      'numpy',
+    ],
 )
