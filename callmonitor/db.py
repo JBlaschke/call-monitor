@@ -10,6 +10,7 @@ from pickle  import dump, load
 from .version   import VERSION
 from .singleton import Singleton
 from .counter   import Counter
+from .settings  import Settings
 
 
 
@@ -77,9 +78,13 @@ class DestinationNotFree(Exception):
 
 
 
+MPI_RANK = Settings().mpi_rank
+
+
+
 class DB(object):
 
-    def __init__(self, root="call-monitor"):
+    def __init__(self, root=f"call-monitor-{MPI_RANK}"):
         self.min_version = (0, 3, 0)
         self._version = VERSION
         self._root    = root
