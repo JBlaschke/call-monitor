@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from .version  import __version__, VERSION
-from .monitor  import intercept
+from .monitor  import intercept, Context
 from .files    import Loader
 from .handler  import Handler, DefaultHandler, NPHandler
 from .args     import ArgsHandler
