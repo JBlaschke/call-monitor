@@ -23,8 +23,8 @@ class Registry(object, metaclass=Singleton):
 
 
     def accumulator_done(self):
-        for elt in self:
-            elt.accumulator_done()
+        for target in self:
+            self[target].accumulator_done()
 
 
     def __getitem__(self, target):

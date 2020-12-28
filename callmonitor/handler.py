@@ -94,7 +94,8 @@ class DefaultHandler(Handler):
         pass
 
 
-    def accumulator_done(self):
+    @classmethod
+    def accumulator_done(cls):
         pass
 
 
@@ -109,6 +110,7 @@ class NPHandler(Handler):
         np.save(join(path, f"arg_{self.target}.npy"), self.data)
 
 
-    def accumulator_done(self):
+    @classmethod
+    def accumulator_done(cls):
         pass
 
