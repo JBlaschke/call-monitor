@@ -108,7 +108,7 @@ class DB(object):
             elt.save(dest)
 
         for elt in input_descriptor["kwargs"]:
-            input_descriptor["kwargs"].save(dest)
+            input_descriptor["kwargs"][elt].save(dest)
 
         if name not in self.calls:
             self.calls[name] = list()
