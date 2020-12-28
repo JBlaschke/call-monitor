@@ -20,18 +20,19 @@ from atexit import register
 REGISTRY = Registry()
 REGISTRY.add(np.ndarray, NPHandler)
 
+
+try:
+    from mpi4py import MPI
+    settings = Settings()
+    if MPI.COMM_WORLD.Get_size() > 1:
+        settings.enable_multi_threading(MPI.COMM_WORLD.Get_rank())
+except ImportError:
+    pass
+
+
 CONTEXT = Context()
 
 def save_db():
     save(CONTEXT.db)
 
 register(save_db)
-
-
-
-try:
-    from mpi4py import MPI
-    settings = Settings()
-    settings.mpi_rank = MPI.Get_rank()
-except ImportError:
-    pass

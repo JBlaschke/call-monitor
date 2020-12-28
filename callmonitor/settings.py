@@ -10,14 +10,32 @@ from .singleton import Singleton
 class Settings(object, metaclass=Singleton):
 
     def __init__(self):
-        self._mpi_rank = 0
+        self._multi_threading = False
+        self._tid             = 0
 
 
     @property
-    def mpi_rank(self):
-        return self._mpi_rank
+    def multi_threading_enabled(self):
+        return self._multi_threading
 
 
-    @mpi_rank.setter
-    def mpi_rank(self, val):
-        self._mpi_rank = val
+    def enable_multi_threading(self, tid):
+        self._multi_threading = True
+        self._tid = tid
+
+
+    def disbale_multi_threading(self):
+        self._multi_threading = False
+
+
+    @property
+    def tid(self):
+        return self._tid
+
+
+    @property
+    def tid_tag(self):
+        if self.multi_threading_enabled:
+            return f"-tid={self.tid}"
+        else:
+            return ""
