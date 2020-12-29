@@ -8,7 +8,7 @@ from .handler  import Handler, DefaultHandler, NPHandler
 from .args     import ArgsHandler
 from .counter  import Counter
 from .registry import Registry
-from .db       import DB, new, save
+from .db       import DB, new, save, load
 from .settings import Settings
 
 import numpy as np
