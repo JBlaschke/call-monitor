@@ -67,6 +67,9 @@ datatype from that point forward. Eg, `numpy` provides its own `save`/`load`
 functions. We have already build (and registered) a numpy arggument handler
 like so:
 ```python
+import numpy as np
+
+from os.path     import join
 from callmonitor import Handler, REGISTRY
 
 class NPHandler(Handler):
@@ -98,7 +101,7 @@ custom handler needs to inherit the `callmonitor.Handler` class and define
 ```python
 from callmonitor import load
 
-db = load("call-monitor-")
+db = load("call-monitor")
 ```
 
 We can now get individual function calls data from the database using `DB.get`:
@@ -107,6 +110,12 @@ args, kwargs = db.get("function_name", invocation_count)
 ```
 (which will also automatically load `.npy` files and any custom handlers --
 remember to register these in `callmonitor.REGISTRY` before executing `db.get`)
+
+__Remember:__ `invocation_count` starts at 1. Therefore to access the _first_ call to `test_np_1`, run:
+```python
+In [4]: db.get("test_np_1", 1)
+Out[4]: ([10, array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])], {})
+```
 
 
 ## Interacting with `callmonitor`
