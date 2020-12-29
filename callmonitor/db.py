@@ -8,7 +8,6 @@ from os.path import join, exists, isdir
 from pickle  import dump, load as pload
 
 from .version   import VERSION
-from .singleton import Singleton
 from .counter   import Counter
 
 

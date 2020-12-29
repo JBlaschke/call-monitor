@@ -4,15 +4,8 @@
 
 
 from os.path import join
-from pickle  import load
 
 import numpy as np
-
-
-
-# class HasNoRoot(Exception):
-#     """Has No Root"""
-#     pass
 
 
 
@@ -20,47 +13,8 @@ class Handler(object):
 
 
     def __init__(self, data, target):
-        self._data     = data
-        self._target   = target
-
-
-    # def __init__(self, dest, target):
-    #     self._dest     = dest
-    #     self._target   = target
-    #     self._has_root = False
-
-
-    # @property
-    # def has_root(self):
-    #     return self._has_root
-
-
-    # @property
-    # def root(self):
-    #     if self.has_root:
-    #         return self._root
-    #     else:
-    #         raise HasNoRoot
-
-
-    # @root.setter
-    # def root(self, val):
-    #     self._root = val
-    #     self._has_root = True
-
-
-    # @property
-    # def dest(self):
-    #     # if self.has_root:
-    #     #     return join(self.root, self._dest)
-    #     # else:
-    #     #     return self._dest
-    #     return self._dest
-
-
-    # @dest.setter
-    # def dest(self, val):
-    #     self._dest = val
+        self._data   = data
+        self._target = target
 
 
     @property
