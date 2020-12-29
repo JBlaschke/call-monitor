@@ -5,7 +5,7 @@
 
 from os      import makedirs, listdir
 from os.path import join, exists, isdir
-from pickle  import dump, load
+from pickle  import dump, load as pload
 
 from .version   import VERSION
 from .singleton import Singleton
@@ -33,7 +33,7 @@ def compatible(i, j, k):
 def load(root):
 
     with open(join(root, "db.pkl"), "rb") as f:
-        db = load(f)
+        db = pload(f)
 
     if not compatible(* db.version):
         raise IncompatibleVersion
@@ -141,7 +141,7 @@ class DB(object):
             raise CannotFindRecod
 
         with open(join("input_descriptor.pkl"), "rb") as f:
-            input_descriptor = load(f)
+            input_descriptor = pload(f)
         
         args = [None]*len(input_descriptor["args"])
         for elt in input_descriptor["args"]:
