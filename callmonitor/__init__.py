@@ -33,6 +33,8 @@ except ImportError:
 CONTEXT = Context()
 
 def save_db():
-    save(CONTEXT.db)
+    if CONTEXT.initialized:
+        CONTEXT.db.lock()
+        save(CONTEXT.db)
 
 register(save_db)
