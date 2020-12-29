@@ -16,7 +16,6 @@ class Context(object, metaclass=Singleton):
     def __init__(self):
 
         settings = Settings()
-        print(settings.multi_threading_enabled)
 
         self._db = DB(root=f"call-monitor{settings.tid_tag}")
         new(self.db)
@@ -28,7 +27,10 @@ class Context(object, metaclass=Singleton):
 
 
     def new(self):
+        self.db.lock()
         save(self.db)
+
+        self._db = DB(root=f"call-monitor{settings.tid_tag}")
         new(self.db)
 
 

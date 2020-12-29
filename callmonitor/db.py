@@ -77,6 +77,16 @@ class DestinationNotFree(Exception):
 
 
 
+class CallNotLogged(Exception):
+    pass
+
+
+
+class CannotFindRecod(Exception):
+    pass
+
+
+
 class DB(object):
 
     def __init__(self, root=f"call-monitor"):
@@ -107,8 +117,8 @@ class DB(object):
         for elt in input_descriptor["args"]:
             elt.save(dest)
 
-        for elt in input_descriptor["kwargs"]:
-            input_descriptor["kwargs"][elt].save(dest)
+        for k, elt in input_descriptor["kwargs"].items():
+            elt.save(dest)
 
         if name not in self.calls:
             self.calls[name] = list()
@@ -119,6 +129,31 @@ class DB(object):
                 "dest": dest
             }
         )
+
+
+    def load(self, name, call_seq): 
+        if self.counter[name] < call_seq:
+            raise CallNotLogged
+
+        dest = join(self.root, name, str(call_seq))
+
+        if not exists(dest):
+            raise CannotFindRecod
+
+        with open(join("input_descriptor.pkl"), "rb") as f:
+            input_descriptor = load(f)
+        
+        args = [None]*len(input_descriptor["args"])
+        for elt in input_descriptor["args"]:
+            elt.load(dest.path)
+            args[i] = elt.data
+
+        kwargs = dict()
+        for k, elt in input_descriptor["kwargs"].items:
+            elt.load(dest.path)
+            kwargs[k] = elt.data
+
+        return args, kwargs
 
     
     def lock(self):
