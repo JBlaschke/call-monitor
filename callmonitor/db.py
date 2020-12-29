@@ -135,7 +135,7 @@ class DB(object):
         )
 
 
-    def load(self, name, call_seq): 
+    def get(self, name, call_seq): 
         if self.counter[name] < call_seq:
             raise CallNotLogged
 
@@ -144,7 +144,7 @@ class DB(object):
         if not exists(dest):
             raise CannotFindRecod
 
-        with open(join("input_descriptor.pkl"), "rb") as f:
+        with open(join(dest, "input_descriptor.pkl"), "rb") as f:
             input_descriptor = pload(f)
         
         args = [None]*len(input_descriptor["args"])
