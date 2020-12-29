@@ -62,13 +62,12 @@ class Counter(object):
 
 
     def __str__(self):
-        str_out = "["
+        str_out = "{\n"
 
         for key in self:
-            str_out += f"{key}:{self[key]}, "
+            str_out += f"    {key}: {self[key]}\n"
 
-        str_out = str_out[:-2]
-        str_out += "]"
+        str_out += "}"
         return str_out
 
 

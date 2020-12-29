@@ -202,3 +202,22 @@ class DB(object):
         for element in directory_contents:
             if isdir(element):
                 yield element
+
+
+    def __str__(self):
+        str_out  = "{\n"
+        str_out += f"    Locked: {self.locked}\n"
+
+        for key, call in self.calls.items():
+            str_out += f"    {key}: "+"{\n"
+            str_out += f"        calls: {self.counter[key]}\n"
+            str_out += f"        args: {call[0]['argspec'].args}\n"
+            str_out += f"        defaults: {call[0]['argspec'].defaults}\n"
+            str_out +=  "    }\n"
+
+        str_out += "}"
+        return str_out
+
+
+    def __repr__(self):
+        return str(self)
