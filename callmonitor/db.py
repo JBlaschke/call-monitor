@@ -148,13 +148,13 @@ class DB(object):
             input_descriptor = pload(f)
         
         args = [None]*len(input_descriptor["args"])
-        for elt in input_descriptor["args"]:
-            elt.load(dest.path)
+        for i, elt in enumerate(input_descriptor["args"]):
+            elt.load(dest)
             args[i] = elt.data
 
         kwargs = dict()
-        for k, elt in input_descriptor["kwargs"].items:
-            elt.load(dest.path)
+        for k, elt in input_descriptor["kwargs"].items():
+            elt.load(dest)
             kwargs[k] = elt.data
 
         return args, kwargs
