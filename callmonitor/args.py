@@ -54,3 +54,34 @@ class ArgsHandler(object):
             "argspec": self.argspec
         }
 
+
+
+class Args(object):
+
+    def __init__(self, argspec, args, kwargs):
+        for i, arg_name in enumerate(argspec.args):
+            setattr(
+                self,
+                arg_name,
+                Args.__get_arg(argspec, arg_name, args, kwargs)
+            )
+
+
+    @staticmethod
+    def __get_arg(argspec, arg_name, args, kwargs):
+        arg_idx = argspec.args.index(arg_name)
+        if arg_idx < len(args):
+            return args[arg_idx]
+        if arg_name in kwargs:
+            return kwargs[arg_name]
+
+        defaults_offset = len(argspec.args) - len(argspec.defaults)
+        return argspec.defaults[arg_idx - defaults_offset]
+
+
+    def __str__(self):
+        return str(self.__dict__.keys())
+
+
+    def __repr__(self):
+        return repr(self.__dict__.keys())

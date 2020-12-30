@@ -4,7 +4,7 @@
 from .version  import __version__, VERSION
 from .monitor  import intercept, Context
 from .handler  import Handler, DefaultHandler, NPHandler
-from .args     import ArgsHandler
+from .args     import ArgsHandler, Args
 from .counter  import Counter
 from .registry import Registry
 from .db       import DB, new, save, load

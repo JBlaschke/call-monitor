@@ -7,8 +7,9 @@ from os      import makedirs, listdir
 from os.path import join, exists, isdir
 from pickle  import dump, load as pload
 
-from .version   import VERSION
-from .counter   import Counter
+from .version import VERSION
+from .counter import Counter
+from .args    import Args
 
 
 
@@ -107,7 +108,8 @@ class DB(object):
 
         self.counter.increment(name)
 
-        dest = join(self.root, name, str(self.counter[name]))
+        loc  = join(name, str(self.counter[name]))
+        dest = join(self.root, loc)
 
         if exists(dest):
             raise DestinationNotFree
@@ -129,7 +131,7 @@ class DB(object):
         self.calls[name].append(
             {
                 "argspec": input_descriptor["argspec"],
-                "dest": dest
+                "loc": loc
             }
         )
 
@@ -138,7 +140,7 @@ class DB(object):
         if self.counter[name] < call_seq:
             raise CallNotLogged
 
-        dest = join(self.root, name, str(call_seq))
+        dest = join(self.root, self.calls[name][call_seq - 1]["loc"])
 
         if not exists(dest):
             raise CannotFindRecod
@@ -159,6 +161,12 @@ class DB(object):
         return args, kwargs
 
     
+    def get_args(self, name, call_seq):
+        args, kwargs = self.get(name, call_seq)
+        argspec      = self.calls[name][call_seq - 1]["argspec"]
+        return Args(argspec, args, kwargs)
+
+
     def lock(self):
         self._locked = True
         self._counter.lock()
