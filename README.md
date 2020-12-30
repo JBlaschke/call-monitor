@@ -123,6 +123,7 @@ Out[4]: ([10, array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])], {})
 We try to enable top-level summaries of the following user-facing classes:
 1. `REGISTRY`
 2. `DB`
+3. `DB.get_args`, and `Args`
 via the `__str__` and `__repr__` functions. Eg, `callmonitor.REGISTRY` shows
 which datatype/handler pairs are configured:
 ```python
@@ -134,7 +135,7 @@ Out[2]:
 ```
 Likewise the `DB` object displays a summary of functions called and how often.
 ```python
-In [3]: db = callmonitor.load("call-monitor-1")
+In [3]: db = callmonitor.load("call-monitor")
 In [4]: db
 Out[4]:
 {
@@ -146,6 +147,27 @@ Out[4]:
     }
 }
 ```
+
+
+### `Args` Container
+
+Picking apart `args`, `kwargs`, and `argspec.defaults` can be very tedious --
+especially if you're trying to find out the value of a specific argument. Hence
+`callmonitor.DB` provides an additionl getter -- `get_args` which returns an
+`Args` object. `callmonitor.Args` are container classes that store each input
+argument by name as an attributed. Eg:
+```python
+In [3]: args = db.get_args("test_fn_1", 1)
+In [4]: args
+Out[4]: dict_keys(['x', 'y', 'z'])
+In [5]: args.x
+Out[5]: 1
+```
+
+Note: the `callmonitor.Args` constructor will fill in any arguments not in
+`args` and `kwargs` from the `FullArgSpec` defaults. If you just want to
+recreate the original function call the `args` and `kwargs` returned by
+`callmonitor.DB.get` should be enough.
 
 
 ## Data Structure
