@@ -16,7 +16,7 @@ def test_np_1(x, n):
 
 if __name__ == "__main__":
 
-    M    = 10
+    M    = int(1e3)
     ar_1 = np.zeros(M)
     ar_2 = np.ones_like(ar_1)
 

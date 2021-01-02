@@ -116,14 +116,16 @@ class DB(object):
 
         makedirs(dest)
 
-        with open(join(dest, "input_descriptor.pkl"), "wb") as f:
-            dump(input_descriptor, f)
-
         for elt in input_descriptor["args"]:
             elt.save(dest)
 
         for k, elt in input_descriptor["kwargs"].items():
             elt.save(dest)
+
+        # This needs to happen _after_ each element's .save as the .save
+        # method can offload some data to disk (eg. numpy arrays)
+        with open(join(dest, "input_descriptor.pkl"), "wb") as f:
+            dump(input_descriptor, f)
 
         if name not in self.calls:
             self.calls[name] = list()

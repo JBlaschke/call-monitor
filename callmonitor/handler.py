@@ -62,6 +62,7 @@ class NPHandler(Handler):
 
     def save(self, path):
         np.save(join(path, f"arg_{self.target}.npy"), self.data)
+        self._data = None
 
 
     @classmethod
