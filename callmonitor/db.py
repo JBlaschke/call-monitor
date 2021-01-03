@@ -43,6 +43,7 @@ def load(root):
         raise IncompatibleVersion
 
     # just to be safe
+    db.root = root
     db.lock()
 
     return db
