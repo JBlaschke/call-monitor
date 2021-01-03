@@ -86,7 +86,7 @@ class CallNotLogged(Exception):
 
 
 
-class CannotFindRecod(Exception):
+class CannotFindRecord(Exception):
     pass
 
 
@@ -145,7 +145,7 @@ class DB(object):
         dest = join(self.root, self.calls[name][call_seq - 1]["loc"])
 
         if not exists(dest):
-            raise CannotFindRecod
+            raise CannotFindRecord
 
         with open(join(dest, "input_descriptor.pkl"), "rb") as f:
             input_descriptor = pload(f)
