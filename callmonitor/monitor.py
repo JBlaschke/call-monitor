@@ -3,7 +3,7 @@
 
 
 from functools  import wraps
-from inspect    import getfullargspec
+from inspect    import getfullargspec, signature
 from .args      import ArgsHandler
 from .singleton import Singleton
 from .db        import DB, new, save
@@ -38,7 +38,7 @@ class Context(object, metaclass=Singleton):
     def new(self):
         self.db.lock()
         save(self.db)
-        
+
         self.init()
 
 
@@ -51,14 +51,16 @@ class Context(object, metaclass=Singleton):
 
 
 
-def intercept(func):
+def intercept(func, spec=None):
+
+    spec = getfullargspec(func)
+    name = func.__name__
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        name = func.__name__
 
         context = Context()
-        handler = ArgsHandler(name, getfullargspec(func))
+        handler = ArgsHandler(name, spec)
 
         if not context.initialized:
             context.init()
@@ -66,5 +68,7 @@ def intercept(func):
         context.db.log(name, handler.save(args, kwargs))
 
         return func(*args, **kwargs)
+
+    wrapper.__signature__ = signature(func)
 
     return wrapper
