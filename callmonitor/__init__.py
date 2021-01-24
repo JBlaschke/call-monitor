@@ -33,7 +33,14 @@ CONTEXT = Context()
 
 def save_db():
     if CONTEXT.initialized:
+        CONTEXT.db.lock()
+        save(CONTEXT.db)
+
+
+def snapshot():
+    if CONTEXT.initialized:
         # Context().new() saves the db before creating a new one
         CONTEXT.new()
+
 
 register(save_db)
