@@ -12,6 +12,8 @@ from .settings import Settings
 
 import numpy as np
 
+from os     import getpid
+from threading import get_ident
 from atexit import register
 
 
@@ -19,17 +21,10 @@ from atexit import register
 REGISTRY = Registry()
 REGISTRY.add(np.ndarray, NPHandler)
 
-
-try:
-    from mpi4py import MPI
-    settings = Settings()
-    if MPI.COMM_WORLD.Get_size() > 1:
-        settings.enable_multi_threading(MPI.COMM_WORLD.Get_rank())
-except ImportError:
-    pass
-
-
+SETTINGS = Settings()
+SETTINGS.enable_multi_threading(getpid(), get_ident())
 CONTEXT = Context()
+
 
 def save_db():
     if CONTEXT.initialized:
@@ -41,6 +36,14 @@ def snapshot():
     if CONTEXT.initialized:
         # Context().new() saves the db before creating a new one
         CONTEXT.new()
+
+
+def rc(multi_threading=None, pid=None, tident=None):
+    if multi_threading is not None:
+        if multi_threading:
+            pid = getpid() if pid is None else pid
+            tident = get_ident() if tident is None else tident
+            SETTINGS.enable_multi_threading(pid, tident=tident)
 
 
 register(save_db)
