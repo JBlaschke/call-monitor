@@ -6,16 +6,23 @@ from time import sleep
 
 from callmonitor.libevent import event_here, start, stop, log, event_log
 
+from deps_event import dependent_function
+
 
 @log
 def inner_function(n):
+    dependent_function(n)
     sleep(n)
 
 
 @log
 def outer_function(n1, n2):
+    @log
+    def inplace_function():
+        pass
     sleep(n1)
     inner_function(n2)
+    inplace_function()
 
 
 @log

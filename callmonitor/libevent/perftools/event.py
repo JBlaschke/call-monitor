@@ -6,6 +6,7 @@ from socket    import gethostname
 from functools import wraps
 from math      import floor
 from time      import time, strftime, gmtime
+from inspect   import getmodule
 
 
 from ..util import Singleton
@@ -145,9 +146,10 @@ def log(func):
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        event_here(func.__name__, status="call")
+        func_id = str(getmodule(func).__name__ + "." + func.__name__)
+        event_here(func_id, status="call")
         ret = func(*args, **kwargs)
-        event_here(func.__name__, status="rtrn")
+        event_here(func_id, status="rtrn")
         return ret
 
     return wrapper
