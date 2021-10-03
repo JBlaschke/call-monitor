@@ -28,18 +28,16 @@ def outer_function(n1, n2):
 @log
 def test_inplace_logger(n):
 
-    start(f"sleep({n})")
+    start(f"sleep({n})", __name__, 0)
     sleep(n)  # sleep for n seconds
-    stop("sleep")
+    stop("sleep", __name__, 0)
     outer_function(n, 2*n)
     inner_function(n)
 
 
 if __name__ == "__main__":
 
-    event_here("start", "    ")
     test_inplace_logger(1)
-    event_here("inplace_test", "done")
 
     print("Testing inplace event logger:")
     for entry in event_log():

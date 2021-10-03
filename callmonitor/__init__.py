@@ -12,9 +12,9 @@ from .settings import Settings
 
 import numpy as np
 
-from os     import getpid
+from os        import getpid
 from threading import get_ident
-from atexit import register
+from atexit    import register
 
 
 
