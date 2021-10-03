@@ -88,7 +88,10 @@ class EventLogger(object, metaclass=Singleton):
         EventLogger(hostname=None, pid=None, tident=None)
         Stores Event object in sequence, together with hostname, rank, and
         thread id. If hostname, pid, or tident are not set, they default to
-        stdlib
+        stdlib.
+
+        The EventLogger tracks how ofter an event with the same `name` and
+        `module` has been called (i.e. entered as PUSH, or CALL)
 
         Singleton class, use clear to reset.
         """
@@ -104,6 +107,8 @@ class EventLogger(object, metaclass=Singleton):
         Add event to ordered list of events
         """
         self._events.append(evt)
+        if evt.status in (EventType.PUSH, EventType.CALL):
+            self._increment(evt)
 
 
     def clear(self):
@@ -111,6 +116,31 @@ class EventLogger(object, metaclass=Singleton):
         Blank the event list
         """
         self._events = list()
+        self._count  = dict()
+
+
+    def _increment(self, evt):
+        """
+        Increment count for `evt.name` in `evt.module`
+        """
+        key = (evt.name, evt.module)
+
+        if not key in self._count.keys():
+            self._count[key] = 0
+
+        self._count[key] += 1
+
+
+    def count(self, name, module):
+        """
+        Get the count for `name` in `module`
+        """
+        key = (name, module)
+
+        if not key in self._count:
+            return 0
+
+        return self._count[key]
 
 
     @property
@@ -175,40 +205,75 @@ def event_here(name, module, status=EventType.NONE, count=0):
     EventLogger().add(Event(name, module, status, count))
 
 
-
 def start(name, module, count):
+    """
+    Enter start of event into EventLogger
+    """
     event_here(name, module, status=EventType.PUSH, count=count)
 
 
-
 def stop(name, module, count):
+    """
+    Enter end of event into EventLogger
+    """
     event_here(name, module, status=EventType.POP, count=count)
 
 
+def count(name, module):
+    """
+    Count occurences of events
+    """
+    return EventLogger().count(name, module)
+
 
 def event_log():
+    """
+    Get string representation of the event log
+    """
 
     hostname = EventLogger().hostname
     pid      = EventLogger().pid
     tident   = EventLogger().tident
 
+    prefix = f"{hostname},{pid},{tident}"
+
     for e in EventLogger().events:
-        yield f"{hostname},{pid},{tident},{e.t},{e.module}.{e.name}:{e.count}"
+        status = "none"
+        if e.status == EventType.PUSH:
+            status = "push"
+        elif e.status == EventType.POP:
+            status = "pop "
+        elif e.status == EventType.CALL:
+            status = "call"
+        elif e.status == EventType.RETURN:
+            status = "rtrn"
+
+        if e.status in (EventType.PUSH, EventType.CALL):
+            yield f"{prefix},{e.t:.16f},{status},{e.module}.{e.name}:{e.count}"
+        else:
+            yield f"{prefix},{e.t:.16f},{status},{e.module}.{e.name}"
 
 
 
 #
 # Decorator to log function calls
 #
+
 def log(func):
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        func_module = str(getmodule(func).__name__)
-        func_name = str(func.__name__)
-        event_here(func_name, func_module, status=EventType.CALL, count=0)
+        name   = str(func.__name__)
+        module = str(getmodule(func).__name__)
+
+        # Calculate count number: this number tracks how many times this
+        # function will have been called
+        ct = count(name, module) + 1
+
+        event_here(name, module, status=EventType.CALL, count=ct)
         ret = func(*args, **kwargs)
-        event_here(func_name, func_module, status=EventType.RETURN, count=0)
+        event_here(name, module, status=EventType.RETURN, count=ct)
+
         return ret
 
     return wrapper
