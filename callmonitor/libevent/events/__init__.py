@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from functools import wraps
-from inspect   import getmodule
+from inspect   import getfile
+from os.path   import abspath
 
 from .event        import Event, EventType
 from .event_logger import EventLogger
@@ -60,9 +61,9 @@ def event_log():
             status = "rtrn"
 
         if e.status in (EventType.PUSH, EventType.CALL):
-            yield f"{prefix},{e.t:.16f},{status},{e.module}.{e.name}:{e.count}"
+            yield f"{prefix},{e.t:.16f},{status},{e.module}::{e.name}:{e.count}"
         else:
-            yield f"{prefix},{e.t:.16f},{status},{e.module}.{e.name}"
+            yield f"{prefix},{e.t:.16f},{status},{e.module}::{e.name}"
 
 
 
@@ -71,12 +72,11 @@ def event_log():
 #
 
 def log(func):
+    name   = str(func.__name__)
+    module = str(abspath(getfile(func)))
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        name   = str(func.__name__)
-        module = str(getmodule(func).__name__)
-
         # Calculate count number: this number tracks how many times this
         # function will have been called
         ct = count(name, module) + 1
